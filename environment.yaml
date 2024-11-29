@@ -6,6 +6,21 @@ channels:
   - nvidia
 dependencies:
   - python==3.11
+  - scipy>=1.14.1
+  - matplotlib>=3.9.2
+  - scikit-learn>=1.5.2
+  - pandas[computation,performance]>=2.2.3
+  - ipywidgets>=8.1.5
+  - pytorch-cuda=12.4
+  - pytorch>=2.5.1
+  - torchvision>=0.20.1
+  - snntorch>=0.9.1
+  - jupyter>=1.1.1
+  - jupyterlab>=4.2.0
+  - notebook>=7.2.2
+  - ffmpeg>=1.4
+  - tonic>=1.5.0
+  - tqdm>=4.67.1
   - pip
   - pip:
     - -e .[dev]
