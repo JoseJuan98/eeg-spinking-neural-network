@@ -1,0 +1,11 @@
+name: d7064e-egg-project
+channels:
+  - defaults
+  - conda-forge
+  - pytorch
+  - nvidia
+dependencies:
+  - python==3.11
+  - pip
+  - pip:
+    - -e .[dev]

@@ -1,0 +1,17 @@
+{
+  "template": "git@github.com:JoseJuan98/data-science-template.git",
+  "commit": "7c603283b32073ef52af9385072285341ed5e4a7",
+  "checkout": null,
+  "context": {
+    "cookiecutter": {
+      "project_name": "EGG Project",
+      "repo_name": "d7064e-egg-project",
+      "author_name": "Jose Pena; Felipe Macias; Andreas Pahlsson; Adam Epstein",
+      "description": "Classification of brain signals",
+      "open_source_license": "MIT",
+      "python_version": "3.11",
+      "_template": "git@github.com:JoseJuan98/data-science-template.git"
+    }
+  },
+  "directory": null
+}
