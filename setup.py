@@ -8,6 +8,8 @@ from typing import Union
 import sys
 import importlib.util
 
+import yaml
+
 
 def import_from_path(path):
     name = path.stem
@@ -21,7 +23,19 @@ def import_from_path(path):
 def get_req(file_path: Union[str, pathlib.Path]) -> list[str]:
     """Retrieve requirements from a pip-requirements file"""
     with open(file_path, "r") as f:
-        reqs = [str(req) for req in f.readlines()]
+        if file_path.suffix == ".txt":
+            reqs = [str(req) for req in f.readlines()]
+        elif file_path.suffix == ".yaml":
+            # removing the pip dependencies
+            reqs = yaml.safe_load(stream=f)
+            reqs = reqs["dependencies"][:-2]
+
+            # remove conflicting conda dependencies that are not compatible with pip from the requirements
+            reqs = [req for req in reqs if not req.startswith(("pytorch", "python", "pandas", "numpy"))]
+
+        else:
+            raise ValueError(f"Unsupported file extension: {file_path.suffix}")
+
     return reqs
 
 
@@ -46,12 +60,10 @@ if __name__ == "__main__":
         long_description_content_type="text/markdown",
         packages=["common"] + setuptools.find_packages(where="src"),
         package_dir={"": "src"},
-        package_data={
-            "common": ["objects/**/*", "data/**/*"]
-        },
+        package_data={"common": ["objects/**/*", "data/**/*"]},
         platforms=["unix", "linux", "cygwin", "win32"],
         python_requires=">=3.11",
-        install_requires=get_req(file_path=project_path / "requirements.txt"),
+        install_requires=get_req(file_path=project_path / "environment.yaml"),
         # additional requirements: to be isntall like '.[dev]'
         extras_require={
             # requirements for linting
