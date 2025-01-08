@@ -4,8 +4,8 @@
   "checkout": null,
   "context": {
     "cookiecutter": {
-      "project_name": "EGG Project",
-      "repo_name": "d7064e-egg-project",
+      "project_name": "EEG Project",
+      "repo_name": "d7064e-eeg-project",
       "author_name": "Jose Pena; Felipe Macias; Andreas Pahlsson; Adam Epstein",
       "description": "Classification of brain signals",
       "open_source_license": "MIT",

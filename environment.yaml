@@ -1,4 +1,4 @@
-name: egg
+name: eeg
 channels:
   - defaults
   - pytorch

@@ -1,4 +1,4 @@
-# EGG Project
+# EEG Project
 
 Classification of brain signals
 

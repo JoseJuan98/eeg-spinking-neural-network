@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""EGG Spiking Convolutional Neural Network."""
+"""EEG Spiking Convolutional Neural Network."""
 import copy
 from typing import Type
 
@@ -163,7 +163,7 @@ def train():
         loss_kwargs={},
         optimizer=torch.optim.Adam,
         opt_kwargs={"betas": (0.875, 0.95), "weight_decay": 0.1},
-        lr=3e-3,
+        lr=1e-3,
     )
     net.to(device)
     scheduler = torch.optim.lr_scheduler.StepLR(net.optimizer, step_size=10, gamma=0.1)

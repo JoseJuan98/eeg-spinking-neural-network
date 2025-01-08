@@ -86,7 +86,7 @@ pip install -e .[dev]
 If conda was used to create the environment, it created a virtual environment called `d7064e-egg-project`. To activate it:
 
 ```bash
-conda activate d7064e-egg-project
+conda activate d7064e-eeg-project
 ```
 
 Otherwise, use the following command to activate the virtual environment:
