@@ -109,12 +109,16 @@ def get_loader_from_dataset(
 
 def train():
     # Variables
-    batch_size = 32
-    num_epochs = 1  #
+    batch_size = 48
+    num_epochs = 30
     # Number of epochs to wait for improvement before stopping
     early_stopping_patience = 5
     model_path = Config.model_dir / "eeg_scnn.pt"
     logger = get_logger(log_filename="train.log")
+
+    # Make dirs if they don't exist
+    model_path.parent.mkdir(parents=True, exist_ok=True)
+    Config.plot_dir.mkdir(parents=True, exist_ok=True)
 
     # Load the data
     data, labels = get_preprocessed_dataset(logger=logger)
@@ -240,7 +244,7 @@ def train():
             )
 
             # Update the best model parameters if the current validation acc is better
-            if epoch_val_acc < best_val_acc:
+            if epoch_val_acc > best_val_acc:
                 best_val_acc = epoch_val_acc
                 best_model_params = copy.deepcopy(net.state_dict())
                 # Reset the counter if there is an improvement
@@ -265,8 +269,8 @@ def train():
     torch.save(net.state_dict(), model_path)
 
     # Plot loss curve
-    pyplot.plot(range(len(train_loss_hist) - 1), train_loss_hist[1:], label="train loss")
-    pyplot.plot(range(len(val_loss_hist) - 1), val_loss_hist[1:], label="validation loss")
+    pyplot.plot(range(len(train_loss_hist)), train_loss_hist, label="train loss")
+    pyplot.plot(range(len(val_loss_hist)), val_loss_hist, label="validation loss")
     pyplot.title("Loss curve")
     pyplot.xlabel("Epoch")
     pyplot.ylabel("Loss")
