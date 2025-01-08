@@ -43,7 +43,8 @@ class EEGCSNN(torch.nn.Module):
             torch.nn.MaxPool2d(kernel_size=2, padding=0, stride=2),
             snntorch.Leaky(beta=beta, spike_grad=spike_grad, init_hidden=True),
             torch.nn.Flatten(start_dim=1),
-            torch.nn.Linear(in_features=16384, out_features=out_features),
+            torch.nn.Linear(in_features=16384, out_features=100),
+            torch.nn.Linear(in_features=100, out_features=out_features),
             # beta: randomly initialize decay rate for output neuron
             # Setting learn_beta=True enables the decay rate beta to be a learnable parameter
             snntorch.Leaky(beta=torch.rand(1), threshold=1.0, learn_beta=True, spike_grad=spike_grad, output=True),
