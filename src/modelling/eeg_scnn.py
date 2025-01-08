@@ -43,8 +43,9 @@ class EEGCSNN(torch.nn.Module):
             torch.nn.MaxPool2d(kernel_size=2, padding=0, stride=2),
             snntorch.Leaky(beta=beta, spike_grad=spike_grad, init_hidden=True),
             torch.nn.Flatten(start_dim=1),
-            torch.nn.Linear(in_features=16384, out_features=100),
-            torch.nn.Linear(in_features=100, out_features=out_features),
+            torch.nn.Linear(in_features=16384, out_features=1000),
+            snntorch.Leaky(beta=beta, spike_grad=spike_grad, init_hidden=True),
+            torch.nn.Linear(in_features=1000, out_features=out_features),
             # beta: randomly initialize decay rate for output neuron
             # Setting learn_beta=True enables the decay rate beta to be a learnable parameter
             snntorch.Leaky(beta=torch.rand(1), threshold=1.0, learn_beta=True, spike_grad=spike_grad, output=True),
@@ -105,15 +106,16 @@ class EEGCSNN(torch.nn.Module):
 def get_loader_from_dataset(
     dataset: torch.utils.data.Dataset, batch_size: int, suffle: bool = True
 ) -> torch.utils.data.DataLoader:
-    return torch.utils.data.DataLoader(dataset, batch_size=batch_size, shuffle=suffle)
+    # add normalization
+    return torch.utils.data.DataLoader(dataset, batch_size=batch_size, shuffle=suffle)  # noqa
 
 
 def train():
     # Variables
-    batch_size = 48
-    num_epochs = 30
+    batch_size = 128
+    num_epochs = 50
     # Number of epochs to wait for improvement before stopping
-    early_stopping_patience = 5
+    early_stopping_patience = 10
     model_path = Config.model_dir / "eeg_scnn.pt"
     logger = get_logger(log_filename="train.log")
 
@@ -164,12 +166,11 @@ def train():
         loss_kwargs={},
         optimizer=torch.optim.Adam,
         opt_kwargs={"betas": (0.875, 0.95), "weight_decay": 0.1},
-        lr=1e-3,
+        lr=3e-5,
     )
     net.to(device)
-    scheduler = torch.optim.lr_scheduler.StepLR(net.optimizer, step_size=10, gamma=0.1)
+    scheduler = torch.optim.lr_scheduler.StepLR(net.optimizer, step_size=20, gamma=0.1)
 
-    dtype = torch.float32
     n_train_batches = len(iter(train_loader))
     n_val_batches = len(val_loader)
 
