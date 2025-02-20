@@ -1,5 +1,16 @@
 # -*- coding: utf-8 -*-
-"""Preprocessing modules."""
+"""
+These modules are based on code originally developed by quadrater/eeg.
+The original code can be found at: https://github.com/quadrater/eeg
+
+All credit for the original implementation goes to the contributors of the above repository.
+This script may include modifications or extensions made for specific use cases.
+
+Original Repository License: None
+Please ensure compliance with the original license when using or distributing this code.
+
+Modifications by: (I) josejuan98
+"""
 import logging
 import pathlib
 
@@ -24,8 +35,8 @@ def get_dataset(file_name: str | pathlib.Path) -> tuple[torch.Tensor, torch.Tens
 
     Returns:
         torch.Tensor: The data tensor.
-        torch.Tensor: The labels tensor.
-        torch.Tensor: The subjects tensor.
+        torch.Tensor: The labels' tensor.
+        torch.Tensor: The subjects' tensor.
         dict: metadata information.
     """
     dataset = torch.load(f=Config.data_dir / file_name, weights_only=True)
@@ -301,25 +312,20 @@ if __name__ == "__main__":
 
     logger.info(f"Data shape after preprocessing: {data.shape}, labels shape: {labels.shape}")
 
-    # Make training and test sets. 80% 10% 10% split.
-    # torch.manual_seed(42)
-    # half = torch.rand_like(mask, dtype=torch.float) < 0.5
-
-    batch_size = 64
-    epochs = 10
-    lr = 0.0001
-    runs = 2
-
     logger.info("Scaling data with robust scaler")
     data = robust_scaler(data)
+
     logger.info("Applying bandpass filter")
     data = bandpass_filter(data)
+
     logger.info(f"Data shape after bandpass filter: {data.shape}")
     logger.info("Applying Independent Component Analysis")
-    components = ica(downsample(data))
 
+    # Using only one trial to save computation time
+    components = ica(downsample(data)[100].unsqueeze(dim=0))
     logger.info(f"Components shape: {components.shape}\nComponents: {components[0]}")
 
+    # Save components plot
     plt.figure(figsize=(15, 5))
     plt.imshow(components[0].numpy(), aspect="auto", cmap="hot", interpolation="nearest")
     plt.colorbar(label="Amplitude")
@@ -327,4 +333,5 @@ if __name__ == "__main__":
     plt.ylabel("Components")
     plt.title("Heatmap")
     plt.yticks(range(components.size(1)), [f"Component {i + 1}" for i in range(components.size(1))])
+    plt.savefig(Config.plot_dir / "components_heatmap.png", transparent=True)
     plt.show()
